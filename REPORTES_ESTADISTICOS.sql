@@ -88,7 +88,7 @@ ORDER BY NOMBRE;
 --Dado un cliente, una fecha inicial y una final, ¿cuál es la información de las ventas que se le han
 -- hecho en ese período? <Folio, Fecha, Total de la factura de venta, Factura pagada o no> El
 -- resultado deberá ordenarse por el folio de la factura, de menor a mayor.
-SELECT FOLIO, FECHA, IMPORTE AS TOTAL_DE_VENTA, (SALDO=0) AS PAGADA 
+SELECT FOLIO, FECHA, IMPORTE AS TOTAL_DE_VENTA, CASE WHEN (SALDO=0) THEN 'PAGADA' ELSE 'NO PAGADA' END AS ESTATUS 
 FROM FACTURA f 
 WHERE IDCLIENTE = 1 AND FECHA BETWEEN '2012-02-01' AND '2012-04-30'
 ORDER BY FOLIO ASC;
@@ -97,7 +97,8 @@ ORDER BY FOLIO ASC;
 --Dado un proveedor, una fecha inicial y una final, ¿cuál es la información de las compras que se le
 -- han hecho en ese período? <Folio, Fecha, Total de la factura de pedido, Pedido recibido o no> El
 -- resultado deberá ordenarse por el folio de la factura, de menor a mayor.
-SELECT IDPEDIDO AS FOLIO, FECHA_PEDIDO AS FECHA, IMPORTE AS TOTAL_DE_PEDIDO, (FECHA_RECIBIDO IS NOT NULL) AS RECIBIDO 
+SELECT IDPEDIDO AS FOLIO, FECHA_PEDIDO AS FECHA, IMPORTE AS TOTAL_DE_PEDIDO, 
+CASE WHEN (FECHA_RECIBIDO IS NOT NULL) THEN 'RECIBIDO' ELSE 'NO RECIBIDO' END AS RECIBIDO 
 FROM PEDIDO p 
 WHERE IDPROVEEDOR = 1 AND FECHA_PEDIDO BETWEEN '2012-02-01' AND '2012-04-30'
 ORDER BY FOLIO ASC;
@@ -118,5 +119,11 @@ SELECT DISTINCT FECHA_PEDIDO, (SELECT -SUM(IMPORTE) FROM PEDIDO WHERE FECHA_PEDI
 FROM PEDIDO p 
 ORDER BY FECHA;
 
+-- 13.	¿Cuáles productos tienen menos de tres piezas en existencia? <clave externa, grupo, marca, costo y existencias>
+-- El resultado deberá ordenarse por el número de existencias de menor a mayor y, como segundo criterio, por clave externa.
+SELECT CLAVE_EXTERNA , IDGRUPO , MARCA , PRECIO / 1.3, EXISTENCIAS 
+FROM PRODUCTO p 
+WHERE EXISTENCIAS < 3
+ORDER BY EXISTENCIAS, CLAVE_EXTERNA ;
 
 
